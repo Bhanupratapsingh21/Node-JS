@@ -1,9 +1,11 @@
 const express = require("express")
 const users = require("./MOCK_DATA.json")
-
+const fs = require("fs")
 const app = express();
 
 const port = 4000
+
+app.use(express.urlencoded({extended:false}))
 
 app.listen(port , ()=>{
     console.log(`Server is Live Running on Port:${port}`)
@@ -48,7 +50,17 @@ app.route("/api/user/:id")
 })
 
 app.post("/api/users",(req,res)=>{
-    return res.json({status : "panding"})
+
+    // console.log(req.body);
+    const body = req.body;
+    users.push({...body, id : users.length+1})
+    fs.writeFile("./MOCK_DATA.json" , JSON.stringify(users), (err,res)=>{
+        if(err){
+            res.json({ massage : "Something Want wrong"})
+        }
+    })
+    return res.json({status : "Successfully added",id: users.length})
+
 });
 
 app.route("/api/users/:id",(req,res)=>{
@@ -58,3 +70,6 @@ app.route("/api/users/:id",(req,res)=>{
 app.patch("/api/users/:id",(req,res)=>{
     return res.json({status : "panding"})
 });
+
+
+// create this full app by own
