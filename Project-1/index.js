@@ -7,6 +7,24 @@ const port = 4000
 
 app.use(express.urlencoded({extended:false}))
 
+
+app.use((req,res,next)=>{
+    console.log("Middleware one")
+    req.sendtonextmiddle = "hello from one"
+    // res.json({msg : "middleone"})
+    next();
+})
+
+
+app.use((req,res,next)=>{
+
+    console.log(req.sendtonextmiddle)
+    console.log("Middleware two")
+    // res.json({msg : "middleone"})
+    next();
+})
+
+
 app.listen(port , ()=>{
     console.log(`Server is Live Running on Port:${port}`)
 })
@@ -65,9 +83,9 @@ app.route("/api/user/:id")
 })
 .delete((req,res)=>{
     const id = Number(req.params.id);
-    const indexToRemove = users.findIndex(user => user.id === id); // Assuming users is an array of objects with an 'id' property
+    const indexToRemove = users.findIndex(user => user.id === id); 
     if (indexToRemove !== -1) {
-        users.splice(indexToRemove, 1); // Remove the element at indexToRemove
+        users.splice(indexToRemove, 1); 
         fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err) => {
             if (err) {
                 res.status(500).json({ message: "Something went wrong" });
