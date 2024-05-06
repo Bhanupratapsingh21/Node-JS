@@ -42,7 +42,9 @@ app.get("/users",(req,res)=>{
     const html = `
     <ul>${users.map((user)=>`<li>${user.first_name}</li>`)}</ul>
     `
-    res.send(html);
+    res
+    .status(200)
+    .send(html);
 
 })
 
@@ -107,7 +109,9 @@ app.post("/api/users",(req,res)=>{
             res.json({ massage : "Something Want wrong"})
         }
     })
-    return res.json({status : "Successfully added",id: users.length})
+    return res
+    .status(201)
+    .json({status : "Successfully added",id: users.length})
 
 });
 
