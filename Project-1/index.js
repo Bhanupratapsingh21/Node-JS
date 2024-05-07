@@ -2,11 +2,40 @@ const express = require("express")
 const users = require("./MOCK_DATA.json")
 const fs = require("fs")
 const app = express();
+const mongoose = require("mongoose");
+const { type } = require("os");
+
 
 const port = 4000
+// connections
+mongoose.connect("mongodb://localhost:27017/you")
+
+// Schema
+const userSchema = new mongoose.Schema({
+    firstName:{
+        type : String,
+        required : true,
+    },
+    lastName:{
+        type : String
+    },
+    email:{
+        type : String,
+        required : true,
+        unique: true,
+    },
+    gender:{
+        type : String,
+    },
+    jobTitle:{
+        type : String
+    }
+})
+
+// model
+const User = mongoose.model("user",userSchema)
 
 app.use(express.urlencoded({extended:false}))
-
 
 app.use((req,res,next)=>{
     console.log("Middleware one")
