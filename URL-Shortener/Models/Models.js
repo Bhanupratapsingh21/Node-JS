@@ -12,7 +12,16 @@ const urlSchema = new mongoose.Schema({
     },
     visitHistory:[{
         timestamp: {
-            type : Number
+            type : String
+        },
+        "ip-addreas":{
+            type: String
+        },
+        "Device-Info":{
+            type: String
+        },
+        "Time-IND":{
+            type : String
         }
     }],
 },{

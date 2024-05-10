@@ -15,7 +15,8 @@ ConnectDb()
 .then(()=>{
     app.listen(port , ()=>{
         console.log(`Server Is Running At Port : ${port}`);
-    })    
+    })
+    app.use(express.json())
     app.use("/" , urlRoute)
 
 })
