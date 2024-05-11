@@ -48,7 +48,7 @@ async function handleRedirect(req, res) {
     }
     const entry = await url.findOneAndUpdate(
         {
-            shortId: Shortid
+            shortId: String(Shortid)
         },
         {
             $push: {
@@ -62,8 +62,9 @@ async function handleRedirect(req, res) {
         }
     )
     if (!entry) {
-        return res.json({ 'BAD-REQ': "404 Not Found" })
+        return res.status(404).json({ 'BAD-REQ': "404 Not Found" })
     }
+
     res.status(302)
     res.redirect(entry.redirectURL)
 }
