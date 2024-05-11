@@ -3,6 +3,9 @@ import urlRoute from "./Routes/url.js";
 import dotenv from "dotenv";
 import ConnectDb from "./utills/connect.js";
 import cors from "cors";
+import ejs from "ejs"
+import path from "path" 
+import url from "./Models/Models.js";
 
 dotenv.config({
     path: "./.env"
@@ -21,6 +24,12 @@ app.use(cors({
 
 app.use(express.json());
 
+// for server site 
+app.set("view engine","ejs");
+
+app.set("views" ,path.resolve('./view'))
+
+
 ConnectDb()
     .then(() => {
         // Start server
@@ -29,7 +38,13 @@ ConnectDb()
         });
 
         // Define routes
-        app.use("/", urlRoute);
+        app.use("/url", urlRoute);
+
+        app.get("/testejs" , async(req,res)=>{
+            const allURLS = await url.find({});
+            return res.render("home")
+        })
+
     })
     .catch(err => {
         console.log("MongoDB connection failed!!", err);
