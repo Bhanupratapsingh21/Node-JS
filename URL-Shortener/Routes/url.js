@@ -5,10 +5,11 @@ import {
     handlegetanalytics
  } from "../Controllers/url.js";
 import url from "../Models/Models.js"
+import restrictToLoggedInUserOnly from "../Middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/url", generateNewUrl);
+router.post("/url", restrictToLoggedInUserOnly,generateNewUrl);
 router.get("/:shortId",handleRedirect);
 router.get("/analytics/:shortId",handlegetanalytics);
 

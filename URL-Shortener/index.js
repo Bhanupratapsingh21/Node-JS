@@ -6,7 +6,9 @@ import cors from "cors";
 import ejs from "ejs"
 import path from "path" 
 import url from "./Models/Models.js";
-
+import UserRoute from './Routes/user.js'
+import cookieParser from "cookie-parser";
+import restrictToLoggedInUserOnly from "./Middleware/auth.js";
 dotenv.config({
     path: "./.env"
 });
@@ -23,7 +25,7 @@ app.use(cors({
 
 
 app.use(express.json());
-
+app.use(cookieParser())
 // for server site 
 app.set("view engine","ejs");
 
@@ -38,18 +40,20 @@ ConnectDb()
         });
 
         // Define routes
-        app.use("/url", urlRoute);
-
+        app.use("/", urlRoute);
+        app.use("/users" , UserRoute);
         app.get("/testejs" , async(req,res)=>{
             const allURLS = await url.find({});
-            return res.render("home")
-        })
+            return res.render("home",{
+                urls : allURLS,
+            });
+        });
 
     })
     .catch(err => {
         console.log("MongoDB connection failed!!", err);
     });
-
+    
 /*
 
 .then(()=>{
