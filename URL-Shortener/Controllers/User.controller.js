@@ -24,9 +24,9 @@ async function handleUserLogin (req , res){
     if(!user) return res.status(404).json({
         msg : "Invaild password or username"
     });
-    const sessionId = uuidv4();
-    setUser(sessionId,user)
-    res.cookie("uid" , sessionId)
+    
+    const token = setUser(user);
+    res.cookie("uid" , token)
     return res.status(201).json({msg : "home",...user});
 }
 
