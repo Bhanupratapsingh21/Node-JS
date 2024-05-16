@@ -153,10 +153,33 @@ async function refreshAccessToken (req,res){
 } 
 
 // always wrap in try catch
+async function LogoutUser (req,res){
+    // so in req we dont have auccces to user but we dont have id etc so let create a middleware 
+    // for it 
+    await User.findByIdAndUpdate(req.user._id,
+        {
+            $set :{
+                refreshToken: undefined
+            }
+        },
+        {
+            new : true
+        })
+    const options = {
+        httpOnly : true,
+        secure: true
+    }
+    
+    return res.status(200)
+        .clearCookie("refreshToken",options)
+        .clearCookie("accessToken",options)
+        .json({MSG: "User Logged Out"})
+}
 
 export {
     handleUserSignUp,
     handleUserLogin,
-    refreshAccessToken
+    refreshAccessToken,
+    LogoutUser
 }
 
