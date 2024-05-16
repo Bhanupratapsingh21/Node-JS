@@ -17,6 +17,9 @@ const userSchema = new mongoose.Schema(
             type : String,
             required : true,
         },
+        refreshToken : {
+            type : String
+        }
     },
     { timestamps : true}
 )
@@ -34,6 +37,7 @@ userSchema.pre("save", async function (next){
 userSchema.methods.isPasswordCorrect = async function (password){
     return await bcrypt.compare(password,this.password)
 }
+
 
 userSchema.methods.genrateAccessToken = function (){
     return jwt.sign(
