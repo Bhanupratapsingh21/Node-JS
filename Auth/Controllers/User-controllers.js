@@ -7,7 +7,7 @@ const genrateAccessTokenandRefreshtokens = async (userid) => {
         const accessToken = user.genrateAccessToken()
         const refreshToken = user.genrateRefreshToken()
 
-        user.refreshtoken = refreshToken
+        user.refreshToken = refreshToken
         await user.save({ validateBeforeSave: false })
 
         return {
@@ -104,8 +104,59 @@ async function handleUserSignUp(req, res) {
     }
 }
 
+async function refreshAccessToken (req,res){
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+    // Check if token is present
+    if (!incomingRefreshToken) {
+        return res.status(401).json({ msg: "Unauthorized request" });
+    }
+    
+    try {
+        const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+    
+        const user = await User.findById(decodedToken?._id);
+        console.log(user.refreshToken)
+        if (!user) {
+            return res.status(401).json({ msg: "Invalid refresh token" });
+        }
+        console.log(user.refreshToken)
+        // Check if the user's refresh token matches the received token
+        if (incomingRefreshToken !== user.refreshToken) {
+            return res.status(401).json({ msg: "Refresh token is expired or used" });
+        }
+    
+        const options = {
+            httpOnly: true,
+            secure: true,
+        };
+    
+        const { accessToken, refreshToken } = await genrateAccessTokenandRefreshtokens(user._id);
+    
+        return res
+            .status(200)
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .json({
+                msg: "Access and refresh token issued successfully",
+                data: {
+                    accessToken,
+                    refreshToken,
+                },
+            });
+    
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        return res.status(500).json({ msg: "Server error" });
+    }
+    
+} 
+
+// always wrap in try catch
+
 export {
     handleUserSignUp,
-    handleUserLogin
+    handleUserLogin,
+    refreshAccessToken
 }
 
