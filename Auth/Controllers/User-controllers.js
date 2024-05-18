@@ -64,7 +64,7 @@ async function handleUserLogin(req, res) {
     }
 
 }
-// added a save method in models so when i save password it got increpts
+// added a save method in models so when i save password it got incrypts
 async function handleUserSignUp(req, res) {
     const { name, email, password } = req.body;
     try {
@@ -175,11 +175,14 @@ async function LogoutUser (req,res){
         .clearCookie("accessToken",options)
         .json({MSG: "User Logged Out"})
 }
-
+async function getCurrentUser (req,res){
+    return res.status(200).json({"MSG":"Current User Fatched Successfully","Data" : req.user})
+} 
 export {
     handleUserSignUp,
     handleUserLogin,
+    getCurrentUser,
     refreshAccessToken,
-    LogoutUser
+    LogoutUser,
 }
 
