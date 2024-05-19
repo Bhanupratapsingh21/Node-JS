@@ -64,7 +64,9 @@ async function handleUserLogin(req, res) {
     }
 
 }
+
 // added a save method in models so when i save password it got incrypts
+
 async function handleUserSignUp(req, res) {
     const { name, email, password } = req.body;
     try {
